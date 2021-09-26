@@ -13,6 +13,7 @@ import (
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 )
 
+//
 type stepExport struct{}
 
 func (s *stepExport) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
