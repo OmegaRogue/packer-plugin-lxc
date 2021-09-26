@@ -31,7 +31,7 @@ func (s *stepExport) Run(ctx context.Context, state multistep.StateBag) multiste
 	}
 
 	containerDir := filepath.Join(lxc_dir, name)
-	outputPath := filepath.Join(config.OutputDir, "rootfs.tar.gz")
+	outputPath := filepath.Join(config.OutputDir, "rootfs.tar.xz")
 	configFilePath := filepath.Join(config.OutputDir, "lxc-config")
 
 	configFile, err := os.Create(configFilePath)
@@ -64,8 +64,9 @@ func (s *stepExport) Run(ctx context.Context, state multistep.StateBag) multiste
 		"lxc-stop", "--name", name,
 	}
 	commands[1] = []string{
-		"tar", "-C", containerDir, "--numeric-owner", "--anchored", "--exclude=./rootfs/dev/log", "-czf", outputPath, "./rootfs",
+		"sudo", "-n", "tar", "-C", filepath.Join(containerDir, "rootfs"), "--numeric-owner", "--anchored", "--exclude=./dev/log", "-cJf", outputPath, ".",
 	}
+	ui.Say(fmt.Sprint(commands[1]))
 	commands[2] = []string{
 		"chmod", "+x", configFilePath,
 	}
